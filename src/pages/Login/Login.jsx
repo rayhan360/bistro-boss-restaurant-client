@@ -1,35 +1,44 @@
-import { useEffect, useRef, useState } from 'react';
-import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
-import leftSide from "../../assets/loginleft.png"
-import "./login.css"
-
+import { useContext, useEffect, useRef, useState } from "react";
+import {
+  loadCaptchaEnginge,
+  LoadCanvasTemplate,
+  validateCaptcha,
+} from "react-simple-captcha";
+import leftSide from "../../assets/loginleft.png";
+import "./login.css";
+import { AuthContext } from "../../Provider/AuthProvider";
+import { Link } from "react-router-dom";
 
 const Login = () => {
-  const captchaRef = useRef(null)
-  const [disabled, setDisabled] = useState(true)
+  const captchaRef = useRef(null);
+  const [disabled, setDisabled] = useState(true);
+  const { signIn } = useContext(AuthContext);
 
-  useEffect(()=> {
-    loadCaptchaEnginge(6); 
-  }, [])
+  useEffect(() => {
+    loadCaptchaEnginge(6);
+  }, []);
 
-    const handleLogin = e => {
-        e.preventDefault()
-        const form = e.target;
-        const email = form.email.value;
-        const password = form.password.value;
-        console.log(email, password);
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+    console.log(email, password);
+    signIn(email, password).then((result) => {
+      const user = result.user;
+      console.log(user);
+    });
+  };
+
+  const handleValidateCaptcha = () => {
+    const user_captcha_value = captchaRef.current.value;
+
+    if (validateCaptcha(user_captcha_value)) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
     }
-
-    const handleValidateCaptcha = () => {
-      const user_captcha_value = captchaRef.current.value;
-
-      if(validateCaptcha(user_captcha_value)){
-        setDisabled(false)
-      }else{
-        setDisabled(true)
-      }
-      
-    }
+  };
   return (
     <div className="hero min-h-screen bg-img">
       <div className="hero-content flex flex-col md:flex-row bg-img shadow-xl p-16">
@@ -64,7 +73,7 @@ const Login = () => {
             </div>
             <div className="form-control">
               <label className="label">
-              <LoadCanvasTemplate />
+                <LoadCanvasTemplate />
               </label>
               <input
                 type="text"
@@ -74,15 +83,27 @@ const Login = () => {
                 className="input input-bordered"
                 required
               />
-              <button onClick={handleValidateCaptcha} className='btn btn-outline btn-xs mt-2'>Validate</button>
+              <button
+                onClick={handleValidateCaptcha}
+                className="btn btn-outline btn-xs mt-2"
+              >
+                Validate
+              </button>
             </div>
             <div className="form-control mt-6">
-              <input disabled={disabled} className="btn btn-primary" type="submit" value="Login" />
+              <input
+                disabled={disabled}
+                className="btn btn-primary"
+                type="submit"
+                value="Login"
+              />
             </div>
-          <div className="text-center">
-            <h1 className="text-[#D1A054B2]">new here? <span className="font-bold">create a account</span></h1>
-          </div>
           </form>
+            <div className="text-center">
+              <h1 className="text-[#D1A054B2] mb-2">
+                new here? <Link to="/signup"><span className="font-bold">create a account</span></Link>
+              </h1>
+            </div>
         </div>
       </div>
     </div>
