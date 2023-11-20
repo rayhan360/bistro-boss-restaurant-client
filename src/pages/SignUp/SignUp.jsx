@@ -4,21 +4,36 @@ import { useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
 import { useContext } from "react";
 import { AuthContext } from "../../Provider/AuthProvider";
+import Swal from "sweetalert2";
 const SignUp = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
-  const { createUser } = useContext(AuthContext);
+  const { createUser, updateUserProfile } = useContext(AuthContext);
 
   const onSubmit = (data) => {
-    // console.log(data.email, data.password);
+    console.log(data);
 
     createUser(data.email, data.password).then((result) => {
       const loggerUser = result.user;
       console.log(loggerUser);
+      updateUserProfile(data.name, data.photo)
+      .then(()=> {
+        console.log("user profile info updated");
+        reset()
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "user created successfull",
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })
+      .catch(error => console.log(error))
     });
   };
 
@@ -40,9 +55,24 @@ const SignUp = () => {
                 </label>
                 <input
                   {...register("name", { required: true })}
-                  type="name"
+                  type="text"
                   placeholder="name"
                   name="name"
+                  className="input input-bordered"
+                />
+                {errors.name && (
+                  <span className="text-red-500">This field is required</span>
+                )}
+              </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Photo URL</span>
+                </label>
+                <input
+                  {...register("photo", { required: true })}
+                  type="text"
+                  placeholder="Photo URL"
+                  name="photo"
                   className="input input-bordered"
                 />
                 {errors.name && (
