@@ -18,11 +18,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "/menu",
-                element: <Menu></Menu>
+                element: <PrivateRoute><Menu></Menu></PrivateRoute>
             },
             {
                 path: "/order/:category",
-                element: <PrivateRoute><Order></Order></PrivateRoute>
+                element: <Order></Order>
             },
             {
                 path: "/login",

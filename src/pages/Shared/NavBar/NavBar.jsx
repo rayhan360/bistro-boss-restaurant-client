@@ -1,6 +1,7 @@
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../../../Provider/AuthProvider";
+import { BsCartCheckFill } from "react-icons/bs";
 
 const NavBar = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -22,6 +23,14 @@ const NavBar = () => {
       <li>
         <NavLink to="/order/Salad">Order Food</NavLink>
       </li>
+      <li className="">
+        <Link>
+          <button className="flex">
+          <span className="text-xl mt-3"><BsCartCheckFill /></span>
+            <div className="badge badge-secondary">+99</div>
+          </button>
+        </Link>
+      </li>
 
       {user ? (
         <>
@@ -36,9 +45,7 @@ const NavBar = () => {
               className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 text-black rounded-box w-52"
             >
               <li>
-                <a className="justify-between">
-                 {user.displayName}
-                </a>
+                <a className="justify-between">{user.displayName}</a>
               </li>
               <li>
                 <a>{user.email}</a>
