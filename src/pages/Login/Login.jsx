@@ -10,6 +10,7 @@ import { AuthContext } from "../../Provider/AuthProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Swal from "sweetalert2";
+import SocialLogin from "../../components/SocialLogin/SocialLogin";
 
 const Login = () => {
   const [disabled, setDisabled] = useState(true);
@@ -120,6 +121,9 @@ const Login = () => {
                 />
               </div>
             </form>
+            <div className="text-center">
+              <SocialLogin></SocialLogin>
+            </div>
             <div className="text-center">
               <h1 className="text-[#D1A054B2] mb-2">
                 new here?{" "}

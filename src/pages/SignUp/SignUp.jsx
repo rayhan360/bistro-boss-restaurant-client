@@ -1,17 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import leftSide from "../../assets/loginleft.png";
 import { useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
 import { useContext } from "react";
 import { AuthContext } from "../../Provider/AuthProvider";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import SocialLogin from "../../components/SocialLogin/SocialLogin";
+
 const SignUp = () => {
+  const axiosPublic = useAxiosPublic();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate()
 
   const { createUser, updateUserProfile } = useContext(AuthContext);
 
@@ -22,18 +27,29 @@ const SignUp = () => {
       const loggerUser = result.user;
       console.log(loggerUser);
       updateUserProfile(data.name, data.photo)
-      .then(()=> {
-        console.log("user profile info updated");
-        reset()
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "user created successfull",
-          showConfirmButton: false,
-          timer: 1500
-        });
-      })
-      .catch(error => console.log(error))
+        .then(() => {
+          // create user entry in the database
+          const userInfo = {
+            name: data.name,
+            email: data.email,
+          };
+          axiosPublic.post("/users", userInfo).then((res) => {
+            console.log(res.data);
+            if (res.data.insertedId) {
+              console.log("user added");
+              reset();
+              Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "user created successfull",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              navigate('/')
+            }
+          });
+        })
+        .catch((error) => console.log(error));
     });
   };
 
@@ -136,6 +152,7 @@ const SignUp = () => {
                 />
               </div>
             </form>
+            <SocialLogin></SocialLogin>
             <div className="text-center">
               <h1 className="text-[#D1A054B2] mb-2">
                 already registered?{" "}
