@@ -3,9 +3,11 @@ import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import { BsCartCheckFill } from "react-icons/bs";
 import useCart from "../../../hooks/useCart";
+import useAdmin from "../../../hooks/useAdmin";
 
 const NavBar = () => {
   const { user, logOut } = useContext(AuthContext);
+  const [isAdmin] = useAdmin();
   const [cart, isLoading] = useCart();
 
   if (isLoading) {
@@ -36,8 +38,19 @@ const NavBar = () => {
       <li>
         <NavLink to="/order/Salad">Order Food</NavLink>
       </li>
+      {
+        user && isAdmin && <li>
+        <NavLink to="/dashboard/adminHome">Dashboard</NavLink>
+      </li>
+      }
+      {
+        user && !isAdmin && <li>
+        <NavLink to="/dashboard/userHome">Dashboard</NavLink>
+      </li>
+      }
+
       <li className="">
-        <Link to="/dashboard/cart">
+        <Link to="/dashboard">
           <button className="flex">
             <span className="text-xl mt-3">
               <BsCartCheckFill />

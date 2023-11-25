@@ -4,8 +4,17 @@ import useMenu from "../../../hooks/useMenu";
 import MenuItems from "../../Shared/MenuItems/MenuItems";
 
 const PopularMenu = () => {
-  const [menu] = useMenu()
+  const [menu, loading] = useMenu()
+  if (loading) {
+    return (
+      <>
+        <h1>Loading.....</h1>
+      </>
+    );
+  }
   const filterPopularData = menu.filter(item => item.category === "popular")
+
+  
 
   // const [menu, setMenu] = useState([]);
   // useEffect(() => {

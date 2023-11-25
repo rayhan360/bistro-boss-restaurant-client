@@ -3,6 +3,7 @@ import {
   BsBookmarkStarFill,
   BsCalendar2CheckFill,
   BsCartCheckFill,
+  BsClipboardCheckFill,
   BsDashCircleDotted,
   BsFillCartPlusFill,
   BsHouseExclamationFill,
@@ -12,10 +13,12 @@ import {
   BsShop,
 } from "react-icons/bs";
 import { NavLink, Outlet } from "react-router-dom";
+import useAdmin from "../hooks/useAdmin";
 
 const Dashboard = () => {
-  // TODO: get isAdmin value in the database
-  const isAdmin = true;
+  // get isAdmin value in the database
+  const [isAdmin] = useAdmin()
+ 
 
   return (
     <div className="flex">
@@ -62,6 +65,11 @@ const Dashboard = () => {
               <li>
                 <NavLink to="/dashboard/reservation">
                   <BsCalendar2CheckFill></BsCalendar2CheckFill> Reservation
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard/paymentHistory">
+                <BsClipboardCheckFill /> Payment History
                 </NavLink>
               </li>
               <li>

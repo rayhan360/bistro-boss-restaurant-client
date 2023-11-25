@@ -12,7 +12,14 @@ import MenuCategory from "../MenuCategory/MenuCategory";
 
 
 const Menu = () => {
-    const [menu] = useMenu()
+    const [menu, loading] = useMenu()
+    if (loading) {
+        return (
+          <>
+            <h1>Loading.....</h1>
+          </>
+        );
+      }
     const filterDesertData = menu.filter(item => item.category === "dessert")
     const filterSoupData = menu.filter(item => item.category === "soup")
     const filterSaladData = menu.filter(item => item.category === "salad")

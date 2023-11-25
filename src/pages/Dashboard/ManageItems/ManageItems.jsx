@@ -1,28 +1,23 @@
-import { BsFillTrash3Fill } from "react-icons/bs";
+import { BsBoxArrowInDownLeft, BsFillTrash3Fill } from "react-icons/bs";
 import SectionTitle from "../../../components/SectionTitle/SectionTitle";
-import useCart from "../../../hooks/useCart";
+import useMenu from "../../../hooks/useMenu";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Link } from "react-router-dom";
 
-const Cart = () => {
-  const [cart, isLoading, refetch] = useCart();
+const ManageItems = () => {
+  const [menu, loading, refetch] = useMenu();
   const axiosSecure = useAxiosSecure();
 
-  console.log(cart);
-  if (isLoading) {
+  if (loading) {
     return (
-      <div>
-        <span className="loading loading-ball loading-xs"></span>
-        <span className="loading loading-ball loading-sm"></span>
-        <span className="loading loading-ball loading-md"></span>
-        <span className="loading loading-ball loading-lg"></span>
-      </div>
+      <>
+        <h1>Loading.....</h1>
+      </>
     );
   }
 
-  const totalPrice = cart.reduce((total, items) => total + items.price, 0);
-  const handleDelete = (id) => {
+  const handleDeleteItem = (item) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -31,36 +26,32 @@ const Cart = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        axiosSecure.delete(`/carts/${id}`).then((res) => {
-          if (res.data.deletedCount > 0) {
-            Swal.fire({
-              title: "Deleted!",
-              text: "Your file has been deleted.",
-              icon: "success",
-            });
-            refetch();
-          }
-        });
+        const res = await axiosSecure.delete(`/menu/${item._id}`);
+        console.log(res.data);
+        if (res.data.deletedCount > 0) {
+          refetch();
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your Item has been deleted.",
+            icon: "success",
+          });
+        }
       }
     });
   };
+
   return (
     <div>
       <SectionTitle
-        heading="My Cart"
-        subHeading="WANNA ADD MORE"
+        heading="---Hurry Up!---"
+        subHeading="MANAGE ALL ITEMS"
       ></SectionTitle>
+
       <div className="bg-[#fff] p-4">
-        <div className="flex justify-evenly">
-          <h2 className="text-2xl">Total Order: {cart.length}</h2>
-          <h2 className="text-2xl">Total Price: ${totalPrice.toFixed(1)}</h2>
-          <Link to="/dashboard/payment">
-            <button disabled={!cart.length} className="p-2 rounded-md bg-[#D1A054B2] text-white cursor-pointer">
-              Pay
-            </button>
-          </Link>
+        <div className="">
+          <h2 className="text-2xl">Total items: {menu.length}</h2>
         </div>
         <div
           className="overflow-x-auto mt-2"
@@ -74,11 +65,12 @@ const Cart = () => {
                 <th>Item Image</th>
                 <th>Item Name</th>
                 <th>Price</th>
-                <th>Action</th>
+                <th>Update</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
-              {cart.map((item, index) => (
+              {menu.map((item, index) => (
                 <tr key={item._id}>
                   <td>{index + 1}</td>
                   <td>
@@ -99,8 +91,17 @@ const Cart = () => {
                   <td>${item.price}</td>
                   <th>
                     <div className="">
+                      <Link to={`/dashboard/updateItem/${item._id}`}>
+                        <button className="btn-sm rounded-sm text-base bg-[#D1A054] text-white">
+                          <BsBoxArrowInDownLeft />
+                        </button>
+                      </Link>
+                    </div>
+                  </th>
+                  <th>
+                    <div className="">
                       <button
-                        onClick={() => handleDelete(item._id)}
+                        onClick={() => handleDeleteItem(item)}
                         className="btn-xs rounded-sm text-base bg-red-600 text-white"
                       >
                         <BsFillTrash3Fill />
@@ -117,4 +118,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default ManageItems;

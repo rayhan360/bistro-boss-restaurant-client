@@ -9,6 +9,15 @@ import PrivateRoute from "./PrivateRoute";
 import Dashboard from "../Layout/Dashboard";
 import Cart from "../pages/Dashboard/Cart/Cart";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
+import AddItems from "../pages/Dashboard/AddItems/AddItems";
+import AdminRoute from "./AdminRoute";
+import ManageItems from "../pages/Dashboard/ManageItems/ManageItems";
+import UpdateItem from "../pages/Dashboard/UpdateItem/UpdateItem";
+import Payment from "../pages/Dashboard/Payment/Payment";
+import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
+import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
+import UserHome from "../pages/Dashboard/UserHome/UserHome";
+import Secret from "../pages/Shared/Secret/Secret";
 
 const router = createBrowserRouter([
     {
@@ -28,6 +37,10 @@ const router = createBrowserRouter([
                 element: <Order></Order>
             },
             {
+                path: "/secret",
+                element: <PrivateRoute><Secret></Secret></PrivateRoute>
+            },
+            {
                 path: "/login",
                 element: <Login></Login>
             },
@@ -41,16 +54,46 @@ const router = createBrowserRouter([
         path: "Dashboard",
         element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
         children: [
+            // normal user route
+            {
+                path: "userHome",
+                element: <UserHome></UserHome>
+            },
             {
                 path: "cart",
                 element: <Cart></Cart>
             },
+            {
+                path:"payment",
+                element: <Payment></Payment>
+            },
+            {
+                path: "paymentHistory",
+                element: <PaymentHistory></PaymentHistory>
+            },
 
-            // admin routes
+            // only admin routes
+            {
+                path: "adminHome",
+                element: <AdminRoute><AdminHome></AdminHome></AdminRoute>
+            },
             {
                 path: "allUser",
-                element: <AllUsers></AllUsers>
-            }
+                element: <AdminRoute><AllUsers></AllUsers></AdminRoute>
+            },
+            {
+                path: "addItems",
+                element: <AdminRoute><AddItems></AddItems></AdminRoute>
+            },
+            {
+                path: "manageItems",
+                element: <ManageItems></ManageItems>
+            },
+            {
+                path: "updateItem/:id",
+                element: <AdminRoute><UpdateItem></UpdateItem></AdminRoute>,
+                loader: ({params})=> fetch(`http://localhost:3000/menu/${params.id}`)
+            },
         ]
     }
 ]);

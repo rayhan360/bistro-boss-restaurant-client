@@ -13,7 +13,14 @@ const Order = () => {
   const {category} = useParams()
   const initialIndex = categories.indexOf(category)
   const [tabIndex, setTabIndex] = useState(initialIndex);
-  const [menu] = useMenu();
+  const [menu, loading] = useMenu();
+  if (loading) {
+    return (
+      <>
+        <h1>Loading.....</h1>
+      </>
+    );
+  }
 
   console.log(category);
   const filterDesertData = menu.filter((item) => item.category === "dessert");
